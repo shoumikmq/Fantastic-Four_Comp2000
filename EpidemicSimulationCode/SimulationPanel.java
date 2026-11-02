@@ -9,6 +9,8 @@ public class SimulationPanel extends Panel implements Runnable {
     private Virus virus = new Virus("Zombie Virus", 45);
     private Hospital hospital;
 
+    private InfectionStrategy infectionStrategy = new AgeBasedInfectionStrategy();
+
     // Controls the simulation loop
     private Thread thread;
     private boolean running;
@@ -240,9 +242,9 @@ public class SimulationPanel extends Panel implements Runnable {
                 if (healthy.isImmune()) {
                     continue;
                 }
-             if (distance(infected, healthy)<= CONTACT_DISTANCE) {
-                    if (shouldInfect(healthy)) {
-                        infect(i, healthy);
+            if (distance(infected, healthy) <= CONTACT_DISTANCE) {
+                if (infectionStrategy.shouldInfect(healthy, virus)) {
+                    infect(i, healthy);
                     }
                 }
             }
