@@ -462,10 +462,12 @@ public class SimulationPanel extends Panel implements Runnable {
 
         super.paint(g);
 
+        ArrayList<Person> snapshot = statsSnapshot;
+
         drawBuildings(g);
-        drawPeople(g);
+        drawPeople(g, snapshot);
         drawLegend(g);
-        drawStats(g);
+        drawStats(g, snapshot);
     }
 
 
@@ -513,9 +515,9 @@ public class SimulationPanel extends Panel implements Runnable {
     }
 
 
-    private void drawPeople(Graphics g) {
+    private void drawPeople(Graphics g, ArrayList<Person> snapshot) {
 
-        for (Person person : statsSnapshot) {
+        for (Person person : snapshot) {
 
             switch (person.getStatus()) {
 
@@ -585,10 +587,10 @@ public class SimulationPanel extends Panel implements Runnable {
     }
 
     // Counts each health state and displays the epidemic statistics
-    private void drawStats(Graphics g) {
+    private void drawStats(Graphics g, ArrayList<Person> snapshot) {
 
         
-    Map<String, Long> counts = statsSnapshot.parallelStream()
+    Map<String, Long> counts = snapshot.parallelStream()
         .collect(Collectors.groupingBy(
                 Person::getStatus,
                 Collectors.counting()
@@ -600,7 +602,7 @@ public class SimulationPanel extends Panel implements Runnable {
         int dead = counts.getOrDefault("Dead", 0L).intValue();
 
 
-        int total = statsSnapshot.size();
+        int total = snapshot.size();
 
         int x =Math.max(10, getWidth() - 245 );
 
