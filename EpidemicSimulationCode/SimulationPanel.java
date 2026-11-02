@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SimulationPanel extends Panel implements Runnable {
 
@@ -581,23 +583,17 @@ public class SimulationPanel extends Panel implements Runnable {
     // Counts each health state and displays the epidemic statistics
     private void drawStats(Graphics g) {
 
-        int healthy = 0;
-        int infected = 0;
-        int recovered = 0;
-        int dead = 0;
+        
+    Map<String, Long> counts = people.parallelStream()
+        .collect(Collectors.groupingBy(
+                Person::getStatus,
+                Collectors.counting()
+        ));
 
-
-        // Polymorphism: all Person subclasses provide their own health status
-        for (Person person : people) {
-
-            switch (person.getStatus()) {
-            case "Healthy":healthy++;break;
-
-                case "Infected":infected++;break;
-                    case "Recovered":recovered++;
-                    break;  case "Dead":dead++;break;
-            }
-        }
+        int healthy = counts.getOrDefault("Healthy", 0L).intValue();
+        int infected = counts.getOrDefault("Infected", 0L).intValue();
+        int recovered = counts.getOrDefault("Recovered", 0L).intValue();
+        int dead = counts.getOrDefault("Dead", 0L).intValue();
 
 
         int total = people.size();
@@ -623,7 +619,7 @@ public class SimulationPanel extends Panel implements Runnable {
         g.drawString(String.format("Infected: %d (%.1f%%)",infected,percent(infected, total)),x + 15,88);
         g.drawString(String.format("Recovered: %d (%.1f%%)",recovered,percent(recovered, total)),x + 15,106);
 
-        g.drawString(String.format("Dead: %d (%.1f%%)",dead,percent(dead, total)),x + 15,124 );
+        g.drawString(String.format("Dead: %d (%.1f%%)",dead,percent(dead, total)),x + 15,124);
     }
 
     // Calculates the percentage of the population in a given state
