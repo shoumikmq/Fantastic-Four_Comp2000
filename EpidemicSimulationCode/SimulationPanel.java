@@ -17,7 +17,7 @@ public class SimulationPanel extends Panel implements Runnable {
 
     // Controls the simulation loop
     private Thread thread;
-    private boolean running;
+    private volatile boolean running;
 
     // Tracks whether treatment buildings are currently visible
     private boolean tentsActive;
