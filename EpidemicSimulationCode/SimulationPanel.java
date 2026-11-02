@@ -242,6 +242,8 @@ public class SimulationPanel extends Panel implements Runnable {
                 if (healthy.isImmune()) {
                     continue;
                 }
+
+            // Asking Strategy object to determine whether infection should occur    
             if (distance(infected, healthy) <= CONTACT_DISTANCE) {
                 if (infectionStrategy.shouldInfect(healthy, virus)) {
                     infect(i, healthy);
@@ -258,37 +260,6 @@ public class SimulationPanel extends Panel implements Runnable {
 
         return Math.sqrt(dx * dx + dy * dy);
     }
-
-
-    private boolean shouldInfect(
-            Healthy person) {
-
-        int chance = virus.getSpreadPercentage();
-        // Under 30:
-        // two close contacts required
-        if (person.getAge() < 30) {
-
-            person.addExposure();
-
-            if (person.getExposureCount() < 2) {
-                return false;
-            }
-
-            chance -= 20;
-        }
-
-        // Over 50:
-        // more likely to become infected
-        else if (person.getAge() > 50) {
-
-            chance += 25;
-        }
-
-        chance =Math.max(5,Math.min(chance, 90));
-
-        return Math.random() * 100 < chance;
-    }
-
 
     private void infect(int index,Healthy person) {
 
