@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 public class SimulationPanel extends Panel implements Runnable {
 
     private ArrayList<Person> people = new ArrayList<>();
+    private volatile ArrayList<Person> statsSnapshot = new ArrayList<>();
     private ArrayList<RecoveryTent> tents = new ArrayList<>();
 
     private Virus virus = new Virus("Zombie Virus", 45);
@@ -163,6 +164,8 @@ public class SimulationPanel extends Panel implements Runnable {
         }
 
         buildingTreatment(now);
+        // Creating a seperate list after the simulation finishes updating its population
+        statsSnapshot = new ArrayList<>(people);
     }
 
     // Creates three recovery tents at random locations
@@ -584,7 +587,7 @@ public class SimulationPanel extends Panel implements Runnable {
     private void drawStats(Graphics g) {
 
         
-    Map<String, Long> counts = people.parallelStream()
+    Map<String, Long> counts = statsSnapshot.parallelStream()
         .collect(Collectors.groupingBy(
                 Person::getStatus,
                 Collectors.counting()
@@ -596,7 +599,7 @@ public class SimulationPanel extends Panel implements Runnable {
         int dead = counts.getOrDefault("Dead", 0L).intValue();
 
 
-        int total = people.size();
+        int total = statsSnapshot.size();
 
         int x =Math.max(10, getWidth() - 245 );
 
