@@ -150,7 +150,7 @@ public class SimulationPanel extends Panel implements Runnable {
     private void updateSimulation() {
         long now = System.currentTimeMillis();
             updateBuildings(now);
-         for (Person person : statsSnapshot) {
+         for (Person person : people) {
             person.move(getWidth(), getHeight());
         }
 
@@ -515,7 +515,7 @@ public class SimulationPanel extends Panel implements Runnable {
 
     private void drawPeople(Graphics g) {
 
-        for (Person person : people) {
+        for (Person person : statsSnapshot) {
 
             switch (person.getStatus()) {
 
