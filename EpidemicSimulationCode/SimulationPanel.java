@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 public class SimulationPanel extends Panel implements Runnable {
 
     private ArrayList<Person> people = new ArrayList<>();
+    // Ensures that the drawing thread can see the latest published snapshot
     private volatile ArrayList<Person> statsSnapshot = new ArrayList<>();
     private ArrayList<RecoveryTent> tents = new ArrayList<>();
 
@@ -149,7 +150,7 @@ public class SimulationPanel extends Panel implements Runnable {
     private void updateSimulation() {
         long now = System.currentTimeMillis();
             updateBuildings(now);
-         for (Person person : people) {
+         for (Person person : statsSnapshot) {
             person.move(getWidth(), getHeight());
         }
 
