@@ -13,7 +13,7 @@ public class SimulationPanel extends Panel implements Runnable {
     private Virus virus = new Virus("Zombie Virus", 45);
     private Hospital hospital;
 
-    private InfectionStrategy infectionStrategy = new AgeBasedInfectionStrategy();
+    private final InfectionStrategy infectionStrategy;
 
     // Controls the simulation loop
     private Thread thread;
@@ -44,10 +44,24 @@ public class SimulationPanel extends Panel implements Runnable {
     private static final long RECOVER_TO_HEALTHY_TIME = 10000;
 
     
+    
     public SimulationPanel() {
-        setBackground(Color.LIGHT_GRAY);
-        createPeople();
+        this(new AgeBasedInfectionStrategy());
     }
+
+    public SimulationPanel(InfectionStrategy infectionStrategy) {
+        if (infectionStrategy == null) {
+        throw new IllegalArgumentException(
+                "Infection strategy cannot be null."
+        );
+    }
+
+    this.infectionStrategy = infectionStrategy;
+
+    setBackground(Color.LIGHT_GRAY);
+    createPeople();
+    }
+
 
     
     // Creates the initial population with a small number already infected
